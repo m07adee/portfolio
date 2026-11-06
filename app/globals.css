@@ -34,7 +34,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -130,6 +130,29 @@ html.lenis, html.lenis body { height: auto; }
   66% { transform: translate(-30px, 20px) scale(0.95); }
 }
 .blob { animation: float-blob 18s ease-in-out infinite; }
+
+/* ---------- Arabic / RTL ---------- */
+html[lang="ar"] body,
+html[lang="ar"] .font-mono {
+  font-family: var(--font-arabic), var(--font-geist-sans), system-ui, sans-serif;
+}
+/* letter-spacing breaks Arabic letter joining */
+html[lang="ar"] [class*="tracking-"] {
+  letter-spacing: 0 !important;
+}
+html[lang="ar"] .hero-name {
+  line-height: 1.35;
+  font-weight: 900;
+}
+/* give Arabic glyphs room inside the clipped word-reveal spans */
+html[lang="ar"] h2 .overflow-hidden {
+  padding-block: 0.12em;
+}
+html[lang="ar"] h2 {
+  line-height: 1.35;
+}
+/* the marquee is always LTR (tech names) */
+[dir="ltr"] { direction: ltr; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

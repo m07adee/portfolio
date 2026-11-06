@@ -38,6 +38,11 @@ interface FlipFadeTextProps {
      * @default 0.05
      */
     exitStaggerDelay?: number
+    /**
+     * Animate letter by letter or word by word (use "word" for Arabic)
+     * @default "letter"
+     */
+    splitBy?: "letter" | "word"
 }
 
 const defaultWords = ["LOADING", "COMPUTING", "SEARCHING", "RETRIEVING", "ASSEMBLING"]
@@ -94,20 +99,25 @@ const Word = memo(function Word({
     staggerDelay,
     exitStaggerDelay,
     letterDuration,
-    textClassName
+    textClassName,
+    splitBy = "letter",
 }: {
     text: string
     staggerDelay: number
     exitStaggerDelay: number
     letterDuration: number
     textClassName?: string
+    splitBy?: "letter" | "word"
 }) {
-    const letters = useMemo(() => text.split(""), [text])
+    // Word mode keeps connected scripts (e.g. Arabic) intact
+    const letters = useMemo(() => (splitBy === "word" ? text.split(" ") : text.split("")), [text, splitBy])
 
     return (
         <motion.div
             className={cn(
-                "flex gap-[0.1em] text-4xl md:text-6xl font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-100",
+                "flex text-4xl",
+                splitBy === "word" ? "flex-wrap justify-center gap-x-[0.3em]" : "gap-[0.1em]",
+                "md:text-6xl font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-100",
                 textClassName
             )}
             initial="initial"
@@ -148,6 +158,7 @@ export function FlipFadeText({
     letterDuration = 0.6,
     staggerDelay = 0.1,
     exitStaggerDelay = 0.05,
+    splitBy = "letter",
 }: FlipFadeTextProps) {
     const [index, setIndex] = useState(0)
 
@@ -175,6 +186,7 @@ export function FlipFadeText({
                         exitStaggerDelay={exitStaggerDelay}
                         letterDuration={letterDuration}
                         textClassName={textClassName}
+                        splitBy={splitBy}
                     />
                 </AnimatePresence>
             </div>
