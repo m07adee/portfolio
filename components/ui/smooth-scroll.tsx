@@ -6,24 +6,23 @@ declare global {
     interface Window { __lenis?: Lenis }
 }
 
-export interface SmoothScrollProps {
-    children: ReactNode
-}
-
-// VengeanceUI smooth-scroll (exposes the Lenis instance for anchor navigation)
-export function SmoothScroll({ children }: SmoothScrollProps) {
+// VengeanceUI smooth-scroll — exposes the Lenis instance for anchor navigation
+// and falls back to native scrolling when the user prefers reduced motion.
+export function SmoothScroll({ children }: { children: ReactNode }) {
     useEffect(() => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
         const lenis = new Lenis({ lerp: 0.09 })
         window.__lenis = lenis
-        let id = 0
-        function raf(time: number) {
+        let frame = 0
+        const raf = (time: number) => {
             lenis.raf(time)
-            id = requestAnimationFrame(raf)
+            frame = requestAnimationFrame(raf)
         }
-        id = requestAnimationFrame(raf)
-        document.body.classList.remove('loading');
+        frame = requestAnimationFrame(raf)
+
         return () => {
-            cancelAnimationFrame(id)
+            cancelAnimationFrame(frame)
             lenis.destroy()
             delete window.__lenis
         }
@@ -31,5 +30,3 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
 
     return <>{children}</>
 }
-
-export default SmoothScroll

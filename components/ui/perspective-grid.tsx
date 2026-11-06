@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 
 interface PerspectiveGridProps {
@@ -59,7 +59,7 @@ export function PerspectiveGrid({
                     tiles.map((_, i) => (
                         <div
                             key={i}
-                            className="tile min-h-[1px] min-w-[1px] border border-gray-300 dark:border-gray-700 bg-transparent transition-colors duration-[1500ms] hover:duration-0"
+                            className="tile transition-colors duration-[1500ms] hover:duration-0"
                         />
                     ))}
             </div>

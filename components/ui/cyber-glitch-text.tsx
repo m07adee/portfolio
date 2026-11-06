@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -21,27 +21,24 @@ export function CyberGlitchText({
 }: CyberGlitchTextProps) {
   const [displayText, setDisplayText] = useState(text);
   const [isHovered, setIsHovered] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   const scramble = () => {
     let iteration = 0;
-    clearInterval(intervalRef.current as NodeJS.Timeout);
+    clearInterval(intervalRef.current);
 
     intervalRef.current = setInterval(() => {
-      setDisplayText((currentText) =>
+      setDisplayText(() =>
         text
           .split("")
-          .map((letter, index) => {
-            if (index < iteration) {
-              return text[index];
-            }
-            return CHARS[Math.floor(Math.random() * CHARS.length)];
-          })
+          .map((letter, index) =>
+            index < iteration ? letter : CHARS[Math.floor(Math.random() * CHARS.length)]
+          )
           .join("")
       );
 
       if (iteration >= text.length) {
-        clearInterval(intervalRef.current as NodeJS.Timeout);
+        clearInterval(intervalRef.current);
       }
 
       iteration += 1 / 3;
@@ -52,7 +49,7 @@ export function CyberGlitchText({
     if (scrambleOnMount) {
       scramble();
     }
-    return () => clearInterval(intervalRef.current as NodeJS.Timeout);
+    return () => clearInterval(intervalRef.current);
   }, [text, scrambleOnMount]);
 
   return (
